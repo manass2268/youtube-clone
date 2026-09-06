@@ -1,0 +1,22 @@
+image: node:20
+
+stages:
+  - build
+
+# Cache modules taaki pipeline fast chale
+cache:
+  paths:
+    - node_modules/
+    - .next/cache/
+
+build_project:
+  stage: build
+  script:
+    - echo "Building the YouTube Clone Next.js app..."
+    - npm install
+    - npm run build
+  artifacts:
+    paths:
+      - .next/
+      - node_modules/
+    expire_in: 1 day

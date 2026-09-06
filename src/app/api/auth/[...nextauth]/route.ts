@@ -1,6 +1,5 @@
-import NextAuth from "next-auth";
+import NextAuth, { User } from "next-auth"; // User type yahan import add kiya hai
 import GoogleProvider from "next-auth/providers/google";
-// Yahan apne supabase client ka correct path daalein
 import { supabase } from "@/lib/supabase"; 
 
 export const authOptions = {
@@ -17,8 +16,8 @@ export const authOptions = {
   ],
   secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
-    // Jab user Google se login karega, yeh trigger hoga
-    async signIn({ user }) {
+    // Yahan { user } ko explicitly type assign kar diya hai
+    async signIn({ user }: { user: User }) {
       if (user.email) {
         const { error } = await supabase
           .from("users")
@@ -28,15 +27,15 @@ export const authOptions = {
               name: user.name,
               image: user.image,
             },
-            { onConflict: "email" } // Agar email already hai, toh bas data update hoga
+            { onConflict: "email" } 
           );
 
         if (error) {
           console.error("Supabase Insert Error:", error);
-          return false; // Error aane par login block karega
+          return false; 
         }
       }
-      return true; // Successfully data save hone par login allow karega
+      return true; 
     },
   },
 };
